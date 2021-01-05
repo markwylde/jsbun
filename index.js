@@ -4,7 +4,7 @@ const resolve = require('resolve');
 
 const matchAllRequires = require('./matchAllRequires');
 
-function grabFile (fileName, relativeDirectory, tree = {}) {
+function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
   if (tree[fileName]) {
     return tree;
   }
@@ -14,22 +14,32 @@ function grabFile (fileName, relativeDirectory, tree = {}) {
     basedir: path.resolve(relativeDirectory)
   });
 
-  const content = fs.readFileSync(filePath, 'utf8');
+  const relativeFilePath = path.relative(entryFile, filePath);
+
+  let content = fs.readFileSync(filePath, 'utf8');
 
   const matches = matchAllRequires(content);
 
   for (const match of matches) {
-    grabFile(match[1], path.resolve(relativeDirectory, path.dirname(filePath)), tree);
+    const relativeSubDirectory = path.resolve(relativeDirectory, path.dirname(filePath));
+    grabFile(match[1], relativeSubDirectory, entryFile, tree);
+
+    const absoluteSubPath = resolve.sync(match[1], {
+      includeCoreModules: false,
+      basedir: relativeSubDirectory
+    });
+    const relativeSubPath = path.relative(entryFile, path.resolve(absoluteSubPath));
+    content = content.replace(match[0], `require('${relativeSubPath}')`);
   }
 
-  tree[fileName] = content;
+  tree[relativeFilePath || fileName] = content;
 
   return tree;
 }
 
 module.exports = entryFile => {
   const fileName = './' + path.relative(path.dirname(entryFile), entryFile);
-  const tree = grabFile(fileName, path.dirname(entryFile));
+  const tree = grabFile(fileName, path.dirname(entryFile), path.resolve(entryFile));
 
   let bundled = '';
 
@@ -38,7 +48,9 @@ module.exports = entryFile => {
   });
 
   return [
-    'var global = window',
+    "var global = (typeof self === 'object' && self.self === self && self) ||",
+    "(typeof global === 'object' && global.global === global && global) ||",
+    'this',
     'var instances = {}',
     'var modules = {',
     `  ${bundled}`,
