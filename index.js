@@ -38,6 +38,7 @@ module.exports = entryFile => {
   });
 
   return [
+    'var global = window',
     'var instances = {}',
     'var modules = {',
     `  ${bundled}`,
