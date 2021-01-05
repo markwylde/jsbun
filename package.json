@@ -1,0 +1,31 @@
+{
+  "name": "jsbun",
+  "version": "1.0.0",
+  "description": "An extremely lightweight bundler that does nothing but merge your js files using commonjs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "(cd test/scenarios/npm; npm i) && node test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^3.4.3",
+    "minimist": "^1.2.5",
+    "resolve": "^1.19.0"
+  },
+  "devDependencies": {
+    "basictap": "^1.1.11"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/markwylde/jsbun.git"
+  },
+  "bugs": {
+    "url": "https://github.com/markwylde/jsbun/issues"
+  },
+  "homepage": "https://github.com/markwylde/jsbun#readme"
+}
