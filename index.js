@@ -11,7 +11,7 @@ function grabFile (fileName, relativeDirectory, tree = {}) {
 
   const filePath = resolve.sync(fileName, {
     includeCoreModules: false,
-    basedir: path.resolve(relativeDirectory, path.dirname(fileName))
+    basedir: path.resolve(relativeDirectory)
   });
 
   const content = fs.readFileSync(filePath, 'utf8');
@@ -19,7 +19,7 @@ function grabFile (fileName, relativeDirectory, tree = {}) {
   const matches = matchAllRequires(content);
 
   for (const match of matches) {
-    grabFile(match[1], relativeDirectory, tree);
+    grabFile(match[1], path.resolve(relativeDirectory, path.dirname(filePath)), tree);
   }
 
   tree[fileName] = content;
