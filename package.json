@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "An extremely lightweight bundler that does nothing but merge your js files using commonjs.",
   "main": "index.js",
+  "bin": {
+    "jsbun": "cli.js"
+  },
   "scripts": {
     "test": "(cd test/scenarios/npm; npm i) && node test"
   },
