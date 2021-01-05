@@ -1,6 +1,6 @@
 {
   "name": "jsbun",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "An extremely lightweight bundler that does nothing but merge your js files using commonjs.",
   "main": "index.js",
   "bin": {
