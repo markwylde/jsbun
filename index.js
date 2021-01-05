@@ -2,6 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const resolve = require('resolve');
 
+const matchAllRequires = require('./matchAllRequires');
+
 function grabFile (fileName, relativeDirectory, tree = {}) {
   if (tree[fileName]) {
     return tree;
@@ -14,7 +16,7 @@ function grabFile (fileName, relativeDirectory, tree = {}) {
 
   const content = fs.readFileSync(filePath, 'utf8');
 
-  const matches = content.matchAll(/require\('(.*)'\)/mg);
+  const matches = matchAllRequires(content);
 
   for (const match of matches) {
     grabFile(match[1], relativeDirectory, tree);
