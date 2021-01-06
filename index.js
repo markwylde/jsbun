@@ -3,6 +3,7 @@ const fs = require('fs');
 const resolve = require('resolve');
 
 const matchAllRequires = require('./matchAllRequires');
+const pluckComments = require('./pluckComments');
 
 function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
   if (tree[fileName]) {
@@ -17,6 +18,8 @@ function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
   const relativeFilePath = path.relative(entryFile, filePath);
 
   let content = fs.readFileSync(filePath, 'utf8');
+  const { commentFreeCode, restoreComments } = pluckComments(content);
+  content = commentFreeCode;
 
   const matches = matchAllRequires(content);
 
@@ -32,6 +35,7 @@ function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
     content = content.replace(match[0], `require('${relativeSubPath}')`);
   }
 
+  content = restoreComments(content);
   tree[relativeFilePath || fileName] = content;
 
   return tree;
