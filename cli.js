@@ -11,12 +11,11 @@ const jsbun = require('./');
 const argv = minimist(process.argv);
 const entryFile = argv._[2];
 
-const result = jsbun(entryFile);
-
 const outputFile = argv.o || argv.output;
 const outputFilePath = outputFile && path.resolve(outputFile);
 
 function run () {
+  const result = jsbun(entryFile);
   if (outputFilePath) {
     fs.writeFileSync(outputFilePath, result);
     console.log('Output successfully written to:', outputFilePath);
