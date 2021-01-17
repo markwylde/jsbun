@@ -5,7 +5,7 @@ const resolve = require('resolve');
 const matchAllRequires = require('./matchAllRequires');
 const pluckComments = require('./pluckComments');
 
-function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
+async function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
   if (tree[fileName]) {
     return tree;
   }
@@ -17,7 +17,7 @@ function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
 
   const relativeFilePath = path.relative(entryFile, filePath);
 
-  let content = fs.readFileSync(filePath, 'utf8');
+  let content = await fs.promises.readFile(filePath, 'utf8');
   const { commentFreeCode, restoreComments } = pluckComments(content);
   content = commentFreeCode;
 
@@ -25,7 +25,7 @@ function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
 
   for (const match of matches) {
     const relativeSubDirectory = path.resolve(relativeDirectory, path.dirname(filePath));
-    grabFile(match[1], relativeSubDirectory, entryFile, tree);
+    await grabFile(match[1], relativeSubDirectory, entryFile, tree);
 
     const absoluteSubPath = resolve.sync(match[1], {
       includeCoreModules: false,
@@ -41,9 +41,9 @@ function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
   return tree;
 }
 
-module.exports = entryFile => {
+module.exports = async entryFile => {
   const fileName = './' + path.relative(path.dirname(entryFile), entryFile);
-  const tree = grabFile(fileName, path.dirname(entryFile), path.resolve(entryFile));
+  const tree = await grabFile(fileName, path.dirname(entryFile), path.resolve(entryFile));
 
   let bundled = '';
 

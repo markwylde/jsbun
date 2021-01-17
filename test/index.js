@@ -37,10 +37,10 @@ test('matches whitespace', t => {
   t.equal(actual[0][1], 'test');
 });
 
-test('npm modules work successfully', t => {
+test('npm modules work successfully', async t => {
   t.plan(1);
 
-  const actual = jsbun('./test/scenarios/npm/index.js');
+  const actual = await jsbun('./test/scenarios/npm/index.js');
   const expected = fs.readFileSync('./test/scenarios/npm/expected.min.js', 'utf8');
 
   t.equal(actual, expected);

@@ -14,8 +14,8 @@ const entryFile = argv._[2];
 const outputFile = argv.o || argv.output;
 const outputFilePath = outputFile && path.resolve(outputFile);
 
-function run () {
-  const result = jsbun(entryFile);
+async function run () {
+  const result = await jsbun(entryFile);
   if (outputFilePath) {
     fs.writeFileSync(outputFilePath, result);
     console.log('Output successfully written to:', outputFilePath);

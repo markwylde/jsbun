@@ -30,6 +30,6 @@ Optional arguments are:
 ### Code
 ```javascript
 const jsbun = require('jsbun');
-const bundled = jsbun('./js/index.js');
+const bundled = await jsbun('./js/index.js');
 console.log(bundled);
 ```
