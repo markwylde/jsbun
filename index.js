@@ -6,16 +6,16 @@ const matchAllRequires = require('./matchAllRequires');
 const pluckComments = require('./pluckComments');
 
 async function grabFile (fileName, relativeDirectory, entryFile, tree = {}) {
-  if (tree[fileName]) {
-    return tree;
-  }
-
   const filePath = resolve.sync(fileName, {
     includeCoreModules: false,
     basedir: path.resolve(relativeDirectory)
   });
 
   const relativeFilePath = path.relative(entryFile, filePath);
+
+  if (tree[relativeFilePath]) {
+    return tree;
+  }
 
   let content = await fs.promises.readFile(filePath, 'utf8');
   const { commentFreeCode, restoreComments } = pluckComments(content);
